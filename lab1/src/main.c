@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]) {
   struct sockaddr_in serv_addr;
   if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
   {
-    printf("invalid ip address")
+    printf("invalid ip address");
     return -1;
   }
 

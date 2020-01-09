@@ -18,6 +18,7 @@ int main(int argc, char const *argv[]) {
     printf("invalid ip address");
     return -1;
   }
+  printf("done");
 
   return 0;
 }

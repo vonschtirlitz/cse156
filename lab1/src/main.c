@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]) {
     return -1;
   }
 
-  printf("%s",argv[1])
+  printf("%s",argv[1]);
 
   struct sockaddr_in serv_addr;
   if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)

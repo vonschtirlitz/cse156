@@ -29,9 +29,11 @@ int main(int argc, char const *argv[]) {
   param1Length = strlen(argv[1]);
   printf("%s\n",argv[2]);
   param2Length = strlen(argv[2]);
-  if(strcmp(argv[3],"-h")==0){
-    int isH = 1;
-    printf("has -h\n");
+  if(argc>3){
+    if(strcmp(argv[3],"-h")==0){
+      int isH = 1;
+      printf("has -h\n");
+    }
   }
   char param1[param1Length];
   strcpy(param1,argv[1]);

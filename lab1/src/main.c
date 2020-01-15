@@ -7,6 +7,7 @@
 #include <string.h>
 
 int main(int argc, char const *argv[]) {
+  fprintf(stdout,"starting\n");
   //check command line options
   /*
   if(argc<2){
@@ -35,21 +36,21 @@ int main(int argc, char const *argv[]) {
   */
 
   //make socket
-  printf("making socket");
+  printf("making socket\n");
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
   if(sockfd<0){
-    fprintf(stderr, "socket not opened");
+    fprintf(stderr, "socket not opened\n");
     return -1;
   }
 
   //get server host info
-  printf("getting host");
+  printf("getting host\n");
   server = gethostbyname("www.example.com");
   //server = gethostbyname(argv[1]);
 
   if(server==NULL){
-    fprintf(stderr, "host not found");
+    fprintf(stderr, "host not found\n");
     return -1;
   }
 
@@ -59,18 +60,21 @@ int main(int argc, char const *argv[]) {
   serv_addr.sin_port = 80; //for HTTP
   bcopy((char *)server->serv_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
   */
-  printf("copying host info");
+
+  printf("copying host info\n");
   memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_port = 80;
   memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
+
   //connect socket
-  printf("connecting socket");
-  if(connect(sockfd,&serv_addr,sizeof(serv_addr)) < 0){
-    fprintf(stderr, "sockfd connection failed");
+  printf("connecting socket\n");
+  if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
+    fprintf(stderr, "sockfd connection failed\n");
     return -1;
   }
+
 
 
 

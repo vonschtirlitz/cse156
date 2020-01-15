@@ -8,21 +8,40 @@
 #include <arpa/inet.h>
 
 int main(int argc, char const *argv[]) {
-  fprintf(stdout,"starting\n");
+  fprintf(stderr,"starting\n");
   //check command line options
-  /*
-  if(argc<2){
-    fprintf(stderr, "invalid usage: use ./pa1 <ip address>\n");
+
+
+  if(argc<3){
+    fprintf(stderr, "invalid usage: use ./pa1 <hostname> <URL> <-h (optional)>\n");
     return -1;
   }
-  */
 
-  //printf("%s\n",argv[1]);
-
+  int param1Length;
+  int param2Length;
+  int isH;
   struct sockaddr_in serv_addr;
   struct hostent *server;
   int sockfd;
-  char *ipaddr = "8.8.8.8";
+  int desPort;
+
+  printf("%s\n",argv[1]);
+  param1Length = strlen(argv[1]);
+  printf("%s\n",argv[2]);
+  param2Length = strlen(argv[2]);
+  if(strcmp(argv[3],"-h")==0){
+    int isH = 1;
+    printf("has -h\n");
+  }
+  char param1[param1Length];
+  strcpy(param1,argv[1]);
+  char param2[param2Length];
+  strcpy(param2,argv[2]);
+
+  //printf("%s\n%s\n",param1,param2);
+
+
+  //char *ipaddr = "8.8.8.8";
 
   //outgoing messages
   //currently example, change to parameter for final
@@ -46,6 +65,7 @@ int main(int argc, char const *argv[]) {
     return -1;
   }
 
+  /*
   //get server host info
   printf("getting host\n");
   server = gethostbyname("www.example.com");
@@ -55,25 +75,26 @@ int main(int argc, char const *argv[]) {
     fprintf(stderr, "host not found\n");
     return -1;
   }
-
-  //add dest host info
-  /*
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = 80; //for HTTP
-  bcopy((char *)server->serv_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
   */
 
+
   printf("copying host info\n");
-  memset(&serv_addr,0,sizeof(serv_addr));
+  //memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(80);
-  //serv_addr.sin_addr.s_addr = inet_addr("8.8.8.8");
-  memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
+  if(desPort==NULL){
+    serv_addr.sin_port = htons(80); //port for HTTP if none specified
+  }
+  else{
+    serv_addr.sin_port = htons(80);
+  }
+
+  serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
+  //memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
 
   //connect socket
   printf("connecting socket\n");
-  printf("%i\n",serv_addr.sin_addr.s_addr);
+  //printf("%i\n",serv_addr.sin_addr.s_addr);
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");
     return -1;

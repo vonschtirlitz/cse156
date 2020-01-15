@@ -10,4 +10,4 @@ pa1:
 cleanpa1:
 	rm pa1
 testpa1:
-	./pa1
+	./pa1 www.example.com 93.184.216.34:80/index.html

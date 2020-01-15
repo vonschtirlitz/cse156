@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <netdb.h>
 
 int main(int argc, char const *argv[]) {
   //check command line options
@@ -33,7 +34,7 @@ int main(int argc, char const *argv[]) {
   */
 
   //make socket
-  sockfd = socket(AF_INET, sock_STREAM, 0);
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
   if(sockfd<0){
     fprintf(stderr, "socket not opened");
@@ -61,7 +62,7 @@ int main(int argc, char const *argv[]) {
   memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
   //connect socket
-  if(connect(sockfd,&serv_addr,sizeof(serv_addr))) < 0{
+  if(connect(sockfd,&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed");
     return -1;
   }

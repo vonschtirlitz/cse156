@@ -79,9 +79,20 @@ int main(int argc, char const *argv[]) {
     return -1;
   }
 
-
-
-
+  //send message
+  int msgstatus;
+  printf("sending message\n");
+  msgstatus = write(sockfd,msgGet,strlen(msgGet));
+  if (msgstatus<0) {
+    fprintf(stderr, "message failed to send\n");
+  }
+  printf("receiving reply\n");
+  char reply[4096];
+  msgstatus = read(sockfd,reply,4095);
+  if (msgstatus<0) {
+    fprintf(stderr, "failed to receive reply\n");
+  }
+  printf("%s\n",reply );
   printf("done\n");
 
   return 0;

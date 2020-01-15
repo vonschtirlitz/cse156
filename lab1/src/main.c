@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 int main(int argc, char const *argv[]) {
   fprintf(stdout,"starting\n");
@@ -21,6 +22,7 @@ int main(int argc, char const *argv[]) {
   struct sockaddr_in serv_addr;
   struct hostent *server;
   int sockfd;
+  char *ipaddr = "8.8.8.8";
 
   //outgoing messages
   //currently example, change to parameter for final
@@ -64,12 +66,14 @@ int main(int argc, char const *argv[]) {
   printf("copying host info\n");
   memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = 80;
+  serv_addr.sin_port = htons(80);
+  //serv_addr.sin_addr.s_addr = inet_addr("8.8.8.8");
   memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
 
   //connect socket
   printf("connecting socket\n");
+  printf("%i\n",serv_addr.sin_addr.s_addr);
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");
     return -1;
@@ -78,7 +82,7 @@ int main(int argc, char const *argv[]) {
 
 
 
-  printf("done");
+  printf("done\n");
 
   return 0;
 }

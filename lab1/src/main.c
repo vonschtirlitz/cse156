@@ -38,7 +38,7 @@ int main(int argc, char const *argv[]) {
   char param2[param2Length];
   strcpy(param2,argv[2]);
 
-  //printf("%s\n%s\n",param1,param2);
+  printf("%s\n%s\n",param1,param2);
 
 
   //char *ipaddr = "8.8.8.8";

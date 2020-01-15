@@ -10,4 +10,4 @@ pa1:
 cleanpa1:
 	rm pa1
 testpa1:
-	./pa1 8.8.8.8
+	./pa1

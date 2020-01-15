@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
+#include <sys/sockfdet.h>
 #include <unistd.h>
 #include <netinet/in.h>
 
@@ -15,46 +15,54 @@ int main(int argc, char const *argv[]) {
 
   //printf("%s\n",argv[1]);
 
-  struct sockaddr_in dest_addr;
-  struct hostent *destination;
-  int sock;
+  struct sockaddr_in serv_addr;
+  struct hostent *server;
+  int sockfd;
 
   //outgoing messages
   //currently example, change to parameter for final
   char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
   char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
 
-  if(inet_pton(AF_INET, argv[1], &dest_addr.sin_addr)<=0)
+  /*
+  if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
   {
     fprintf(stderr, "invalid ip address\n");
     return -1;
   }
+  */
 
   //make socket
-  sock = socket(AF_INET, SOCK_STREAM, 0);
+  sockfd = socket(AF_INET, sock_STREAM, 0);
 
-  if(sock<0){
+  if(sockfd<0){
     fprintf(stderr, "socket not opened");
     return -1;
   }
 
-  //get destination host info
-  destination = gethostbyname("www.example.com");
-  //destination = gethostbyname(argv[1]);
+  //get server host info
+  server = gethostbyname("www.example.com");
+  //server = gethostbyname(argv[1]);
 
-  if(destination==NULL){
+  if(server==NULL){
     fprintf(stderr, "host not found");
     return -1;
   }
 
   //add dest host info
-  dest_addr.sin_family = AF_INET;
-  dest_addr.sin_port = 80; //for HTTP
-  bcopy((char *)destination->dest_addr, (char *)&dest_addr.sin_addr.s_addr, destination->h_length);
+  /*
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = 80; //for HTTP
+  bcopy((char *)server->serv_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
+  */
+  memset(&serv_addr,0,sizeof(serv_addr));
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = 80;
+  memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
   //connect socket
-  if(connect(sock,&dest_addr,sizeof(dest_addr))) < 0{
-    fprintf(stderr, "sock connection failed");
+  if(connect(sockfd,&serv_addr,sizeof(serv_addr))) < 0{
+    fprintf(stderr, "sockfd connection failed");
     return -1;
   }
 

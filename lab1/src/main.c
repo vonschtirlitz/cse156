@@ -16,6 +16,8 @@ int main(int argc, char const *argv[]) {
   //printf("%s\n",argv[1]);
 
   struct sockaddr_in dest_addr;
+  struct hostent *destination;
+  int sock;
 
   //outgoing messages
   //currently example, change to parameter for final
@@ -51,7 +53,7 @@ int main(int argc, char const *argv[]) {
   bcopy((char *)destination->dest_addr, (char *)&dest_addr.sin_addr.s_addr, destination->h_length);
 
   //connect socket
-  if(connect(sock,&dest_addr,sizeof(dest_addr)))<0{
+  if(connect(sock,&dest_addr,sizeof(dest_addr))) < 0{
     fprintf(stderr, "sock connection failed");
     return -1;
   }

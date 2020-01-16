@@ -40,7 +40,50 @@ int main(int argc, char const *argv[]) {
   char param2[param2Length];
   strcpy(param2,argv[2]);
 
-  printf("%s\n%s\n",param1,param2);
+  /*
+  char *param2parts[3];
+  int i =0;
+  char *p = strtok(param2,":");
+  while(p!=NULL){
+    param2parts[i++]=p;
+    p = strtok(NULL,":");
+  }
+  for (i = 0; i < 3; ++i)
+        printf("%s\n", param2parts[i]);
+        */
+
+
+
+  printf("splitting param2\n");
+  char *tok1 = strtok(param2,":");
+  char *ipaddr,*path,*port;
+  printf("token1: %s\n",tok1 );
+  //printf("%s\n",strtok(param2,"/"));
+  if(strlen(tok1)==param2Length){//there is no extra port specified
+    printf("no port\n");
+    ipaddr = strtok(tok1,"/");
+    printf("ipaddr: %s\n",ipaddr);
+    path = strtok(NULL,"/");
+    printf("path: %s\n\n",path);
+  }
+  else{
+    printf("is extra port\n\n");
+    strcpy(ipaddr,tok1);
+    printf("ipaddr: %s\n",ipaddr);
+    port = strtok(NULL,"/");
+    printf("port: %s\n",port);
+    path = strtok(NULL,"/");
+    printf("path: %s\n\n",path);
+  }
+  printf("param2Length: %i\n",strlen(param2));
+  printf("param2: %s\n\n",param2);
+
+  int tempLength = 4+strlen(path);
+  char temp[tempLength];
+  strcat(temp,"/");
+  strcat(temp,path);
+  printf("new path: %s\n",temp);
+  //char *ipaddr =
 
 
   //char *ipaddr = "8.8.8.8";
@@ -48,6 +91,7 @@ int main(int argc, char const *argv[]) {
   //outgoing messages
   //currently example, change to parameter for final
   char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgGet = "GET "+temp+" HTTP/1.1\r\nHost: "+param1+"\r\n\r\n";
   char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
 
   /*
@@ -83,19 +127,25 @@ int main(int argc, char const *argv[]) {
   printf("copying host info\n");
   //memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
-  if(desPort==NULL){
+  if(port==NULL){
+    printf("port: %s\n", port);
     serv_addr.sin_port = htons(80); //port for HTTP if none specified
   }
   else{
-    serv_addr.sin_port = htons(80);
+    printf("port: %s\n", port);
+
+    serv_addr.sin_port = atoi(port);
   }
 
-  serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
+  serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
   //memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
+  printf("hostinfocopied\n");
 
   //connect socket
-  printf("connecting socket\n");
+  printf("\nconnecting socket\n");
+  printf("%s\n", ipaddr);
+  printf("%s\n\n", port);
   //printf("%i\n",serv_addr.sin_addr.s_addr);
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");
@@ -103,6 +153,7 @@ int main(int argc, char const *argv[]) {
   }
 
   //send message
+  printf("message: %s\n", msgGet);
   int msgstatus;
   printf("sending message\n");
   msgstatus = write(sockfd,msgGet,strlen(msgGet));
@@ -115,7 +166,7 @@ int main(int argc, char const *argv[]) {
   if (msgstatus<0) {
     fprintf(stderr, "failed to receive reply\n");
   }
-  printf("%s\n",reply );
+  //printf("%s\n",reply );
   printf("done\n");
 
   return 0;

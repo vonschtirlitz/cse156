@@ -65,6 +65,7 @@ int main(int argc, char const *argv[]) {
     printf("ipaddr: %s\n",ipaddr);
     path = strtok(NULL,"/");
     printf("path: %s\n\n",path);
+    port = NULL;
   }
   else{
     printf("is extra port\n\n");
@@ -78,13 +79,13 @@ int main(int argc, char const *argv[]) {
   printf("param2Length: %i\n",strlen(param2));
   printf("param2: %s\n\n",param2);
 
-  printf("stuff: %s\n%s\n%s\n", ipaddr,path,port);
+  //printf("stuff: %s\n%s\n%s\n", ipaddr,path,port);
 
-  int tempLength = 4+strlen(path);
-  char temp[tempLength];
-  strcat(temp,"/");
-  strcat(temp,path);
-  printf("new path: %s\n",temp);
+  //int tempLength = 4+strlen(path);
+  //char temp[tempLength];
+  //strcat(temp,"/");
+  //strcat(temp,path);
+  //printf("new path: %s\n",temp);
   //char *ipaddr =
 
 
@@ -130,24 +131,31 @@ int main(int argc, char const *argv[]) {
   //memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   if(port==NULL){
-    printf("port: %s\n", port);
+
     serv_addr.sin_port = htons(80); //port for HTTP if none specified
   }
   else{
-    printf("port: %s\n", port);
+    //printf("port: %s\n", port);
 
-    serv_addr.sin_port = atoi(port);
+    serv_addr.sin_port = htons(atoi(port));
   }
   printf("ipaddr: %s\n",ipaddr);
-  serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
+  //serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
+  serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
+
   //memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
   printf("hostinfocopied\n");
 
   //connect socket
   printf("\nconnecting socket\n");
-  printf("%s\n", ipaddr);
-  printf("%s\n", port);
+  printf("IP: %s\n", ipaddr);
+  if(port!=NULL){
+    printf("port: %s\n", port);
+  }
+  else{
+    printf("port (none given): 80\n");
+  }
   //printf("%i\n",serv_addr.sin_addr.s_addr);
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");

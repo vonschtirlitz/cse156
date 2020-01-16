@@ -68,7 +68,7 @@ int main(int argc, char const *argv[]) {
   }
   else{
     printf("is extra port\n\n");
-    strcpy(ipaddr,tok1);
+    ipaddr = tok1;
     printf("ipaddr: %s\n",ipaddr);
     port = strtok(NULL,"/");
     printf("port: %s\n",port);
@@ -77,6 +77,8 @@ int main(int argc, char const *argv[]) {
   }
   printf("param2Length: %i\n",strlen(param2));
   printf("param2: %s\n\n",param2);
+
+  printf("stuff: %s\n%s\n%s\n", ipaddr,path,port);
 
   int tempLength = 4+strlen(path);
   char temp[tempLength];
@@ -136,7 +138,7 @@ int main(int argc, char const *argv[]) {
 
     serv_addr.sin_port = atoi(port);
   }
-
+  printf("ipaddr: %s\n",ipaddr);
   serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
   //memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
 
@@ -145,7 +147,7 @@ int main(int argc, char const *argv[]) {
   //connect socket
   printf("\nconnecting socket\n");
   printf("%s\n", ipaddr);
-  printf("%s\n\n", port);
+  printf("%s\n", port);
   //printf("%i\n",serv_addr.sin_addr.s_addr);
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");

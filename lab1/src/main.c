@@ -218,7 +218,7 @@ int main(int argc, char const *argv[]) {
   //printf("%s\n",reply);
   //fprintf(outfile, "%s", reply);
   printf("done\n");
-  if (isH==1) {
+  if (isH!=1) {
     fclose(outfile);
   }
 

@@ -186,21 +186,32 @@ int main(int argc, char const *argv[]) {
   printf("receiving reply\n");
 
   char reply[129];
-  outfile = fopen("output.dat","w");
-  int loopcount = 1;
-  int readcount = read(sockfd,reply,128);
-  while(readcount==128){
-    printf("%i\n",readcount);
-    printf("%s\n\n\n",reply);
+  if(isH!=1){
+    outfile = fopen("output.dat","w");
+    int loopcount = 1;
+    int readcount = read(sockfd,reply,128);
+    while(readcount==128){
+      //printf("%i\n",readcount);
+      //printf("%s\n\n\n",reply);
+      fprintf(outfile, "%s", reply);
+      bzero(reply,129);
+      //printf("starting newread\n");
+      readcount = read(sockfd,reply,128);
+      //printf("readcountnext: %i\n",readcount);
+    }
+    //printf("outofloop\n");
+    //printf("%s\n",reply );
     fprintf(outfile, "%s", reply);
-    bzero(reply,129);
-    printf("starting newread\n");
-    readcount = read(sockfd,reply,128);
-    printf("readcountnext: %i\n",readcount);
   }
-  printf("outofloop\n");
-  printf("%s\n",reply );
-  fprintf(outfile, "%s", reply);
+  else{//do header and output to stdout
+    int readcount = read(sockfd,reply,128);
+    while(readcount==128){
+      fprintf(stdout, "%s", reply);
+      bzero(reply,129);
+      readcount = read(sockfd,reply,128);
+    }
+    fprintf(stdout, "%s", reply);
+  }
 
   //printf("%s\n",reply);
   //fprintf(outfile, "%s", reply);

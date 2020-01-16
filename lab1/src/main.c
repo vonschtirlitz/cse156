@@ -8,10 +8,7 @@
 #include <arpa/inet.h>
 
 int main(int argc, char const *argv[]) {
-  fprintf(stderr,"starting\n");
   //check command line options
-
-
   if(argc<3){
     fprintf(stderr, "invalid usage: use ./pa1 <hostname> <URL> <-h (optional)>\n");
     return -1;
@@ -26,14 +23,14 @@ int main(int argc, char const *argv[]) {
   int desPort;
   FILE * outfile;
 
-  printf("%s\n",argv[1]);
+  //printf("%s\n",argv[1]);
   param1Length = strlen(argv[1]);
-  printf("%s\n",argv[2]);
+  //printf("%s\n",argv[2]);
   param2Length = strlen(argv[2]);
   if(argc>3){
-    if(strcmp(argv[3],"-h")==0){
+    if(strcmp(argv[3],"-h")==0){//has -h flag
       isH = 1;
-      printf("has -h\n");
+      //printf("has -h\n");
     }
   }
   char param1[param1Length];
@@ -42,64 +39,48 @@ int main(int argc, char const *argv[]) {
   strcpy(param2,argv[2]);
 
 
-  printf("splitting param2\n");
+  //printf("splitting param2\n");
   char *tok1 = strtok(param2,":");
   char *ipaddr;
   char *path;
   char *port;
   char *temp;
 
-  printf("token1: %s\n",tok1 );
+  //printf("token1: %s\n",tok1 );
   //printf("%s\n",strtok(param2,"/"));
   if(strlen(tok1)==param2Length){//there is no extra port specified
-    printf("no port\n");
+    //printf("no port\n");
     temp = strtok(tok1,"/");
     ipaddr = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(ipaddr,temp);
-    printf("ipaddr: %s\n",ipaddr);
+    //printf("ipaddr: %s\n",ipaddr);
 
     temp = strtok(NULL,"/");
     path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(path,temp);
-    printf("path: %s\n\n",path);
+    //printf("path: %s\n\n",path);
 
     port = NULL;
   }
   else{
-    printf("is extra port\n\n");
+    //printf("is extra port\n\n");
     ipaddr = tok1;
 
     ipaddr = (char*)malloc((strlen(tok1)+1)*(sizeof(char)));
     strcpy(ipaddr,tok1);
-    printf("ipaddr: %s\n",ipaddr);
+    //printf("ipaddr: %s\n",ipaddr);
 
     temp = strtok(NULL,"/");
     port = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(port,temp);
-    printf("port: %s\n",port);
+    //printf("port: %s\n",port);
 
     temp = strtok(NULL,"/");
     path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(path,temp);
-    printf("path: %s\n\n",path);
+    //printf("path: %s\n\n",path);
   }
-  printf("param2Length: %i\n",strlen(param2));
-  printf("param2: %s\n\n",param2);
 
-  //printf("stuff: %s\n%s\n%s\n", ipaddr,path,port);
-
-  //int tempLength = 4+strlen(path);
-  //char temp[100];
-  //strcat(temp,"/");
-  //strcat(temp,path);
-  //printf("new path: %s\n",temp);
-  //char *ipaddr =
-
-
-  //char *ipaddr = "8.8.8.8";
-
-  //outgoing messages
-  //currently example, change to parameter for final
   //char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
   //char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
   char *msgGet = malloc(1000*sizeof(char));
@@ -116,20 +97,8 @@ int main(int argc, char const *argv[]) {
   strcat(msgHead,param1);
   strcat(msgHead,"\r\n\r\n");
 
-
-
-  /*
-  if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
-  {
-    fprintf(stderr, "invalid ip address\n");
-    return -1;
-  }
-  */
-
   //make socket
-  printf("making socket\n");
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
   if(sockfd<0){
     fprintf(stderr, "socket not opened\n");
     return -1;
@@ -142,67 +111,43 @@ int main(int argc, char const *argv[]) {
   else{
     serv_addr.sin_port = htons(atoi(port)); //use provided port
   }
-  printf("ipaddr: %s\n",ipaddr);
   serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
   //debug manual ip
   //serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
 
 
   //connect socket
-  /*
-  printf("\nconnecting socket\n");
-  printf("IP: %s\n", ipaddr);
-  if(port!=NULL){
-    printf("port: %s\n", port);
-  }
-  else{
-    printf("port (none given): 80\n");
-  }
-  */
-
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");
     return -1;
   }
 
   //send message
-
   int msgstatus;
-  printf("sending message\n");
   char *toSend = malloc(strlen(msgHead)*sizeof(char));
 
-  if(isH==1){
+  if(isH==1){//select message to send, get or head
     strcpy(toSend,msgHead);
   }
   else{
     strcpy(toSend,msgGet);
   }
-  printf("message: %s\n", toSend);
 
   msgstatus = write(sockfd,toSend,strlen(toSend));
   if (msgstatus<0) {
     fprintf(stderr, "message failed to send\n");
   }
-  printf("receiving reply\n");
 
   char reply[129];
 
-  if(isH!=1){
-
-    int loopcount = 1;
+  if(isH!=1){//read stream to buffer and copy to outfile
     int readcount = read(sockfd,reply,128);
     while(readcount==128){
       outfile = fopen("output.dat","w");
-      //printf("%i\n",readcount);
-      //printf("%s\n\n\n",reply);
       fprintf(outfile, "%s", reply);
-      bzero(reply,129);
-      //printf("starting newread\n");
+      bzero(reply,128);
       readcount = read(sockfd,reply,128);
-      //printf("readcountnext: %i\n",readcount);
     }
-    //printf("outofloop\n");
-    //printf("%s\n",reply );
     fprintf(outfile, "%s", reply);
   }
   else{//do header and output to stdout
@@ -217,10 +162,16 @@ int main(int argc, char const *argv[]) {
 
   //printf("%s\n",reply);
   //fprintf(outfile, "%s", reply);
-  printf("done\n");
+  //printf("done\n");
   if (isH!=1) {
     fclose(outfile);
   }
+
+  free(msgHead);
+  free(msgGet);
+  free(path);
+  free(port);
+  free(ipaddr);
 
 
   return 0;

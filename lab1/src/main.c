@@ -137,14 +137,14 @@ int main(int argc, char const *argv[]) {
     fprintf(stderr, "message failed to send\n");
   }
 
-  char reply[128];
+  char reply[129];
 
   if(isH!=1){//read stream to buffer and copy to outfile
     int readcount = read(sockfd,reply,128);
     outfile = fopen("output.dat","w");
     while(readcount==128){
       fprintf(outfile, "%s", reply);
-      bzero(reply,128);
+      bzero(reply,129);
       readcount = read(sockfd,reply,128);
     }
     fprintf(outfile, "%s", reply);
@@ -153,7 +153,7 @@ int main(int argc, char const *argv[]) {
     int readcount = read(sockfd,reply,128);
     while(readcount==128){
       fprintf(stdout, "%s", reply);
-      bzero(reply,128);
+      bzero(reply,129);
       readcount = read(sockfd,reply,128);
     }
     fprintf(stdout, "%s", reply);

@@ -186,12 +186,13 @@ int main(int argc, char const *argv[]) {
   printf("receiving reply\n");
 
   char reply[129];
-  outfile = fopen("output.dat","w");
+
   if(isH!=1){
 
     int loopcount = 1;
     int readcount = read(sockfd,reply,128);
     while(readcount==128){
+      outfile = fopen("output.dat","w");
       //printf("%i\n",readcount);
       //printf("%s\n\n\n",reply);
       fprintf(outfile, "%s", reply);
@@ -217,7 +218,10 @@ int main(int argc, char const *argv[]) {
   //printf("%s\n",reply);
   //fprintf(outfile, "%s", reply);
   printf("done\n");
-  fclose(outfile);
+  if (isH==1) {
+    fclose(outfile);
+  }
+
 
   return 0;
 }

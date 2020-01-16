@@ -184,15 +184,26 @@ int main(int argc, char const *argv[]) {
     fprintf(stderr, "message failed to send\n");
   }
   printf("receiving reply\n");
-  
-  char reply[20000];
+
+  char reply[129];
   outfile = fopen("output.dat","w");
-  msgstatus = read(sockfd,reply,20000);
-  if (msgstatus<0) {
-    fprintf(stderr, "failed to receive reply\n");
+  int loopcount = 1;
+  int readcount = read(sockfd,reply,128);
+  while(readcount==128){
+    printf("%i\n",readcount);
+    printf("%s\n\n\n",reply);
+    fprintf(outfile, "%s", reply);
+    bzero(reply,129);
+    printf("starting newread\n");
+    readcount = read(sockfd,reply,128);
+    printf("readcountnext: %i\n",readcount);
   }
-  printf("%s\n",reply);
+  printf("outofloop\n");
+  printf("%s\n",reply );
   fprintf(outfile, "%s", reply);
+
+  //printf("%s\n",reply);
+  //fprintf(outfile, "%s", reply);
   printf("done\n");
   fclose(outfile);
 

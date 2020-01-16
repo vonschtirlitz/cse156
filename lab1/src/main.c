@@ -17,7 +17,8 @@
 int main(int argc, char const *argv[]) {
   //check command line options
   if(argc<3){
-    fprintf(stderr, "invalid usage: use ./pa1 <hostname> <URL> <-h (optional)>\n");
+    fprintf(stderr,
+      "invalid usage: use ./pa1 <hostname> <URL> <-h (optional)>\n");
     return -1;
   }
 
@@ -37,7 +38,6 @@ int main(int argc, char const *argv[]) {
   if(argc>3){
     if(strcmp(argv[3],"-h")==0){//has -h flag
       isH = 1;
-      //printf("has -h\n");
     }
   }
   char param1[param1Length];
@@ -45,51 +45,43 @@ int main(int argc, char const *argv[]) {
   char param2[param2Length];
   strcpy(param2,argv[2]);
 
-
-  //printf("splitting param2\n");
+  //split second argument to different parts with strtok
   char *tok1 = strtok(param2,":");
   char *ipaddr;
   char *path;
   char *port;
   char *temp;
 
-  //printf("token1: %s\n",tok1 );
-  //printf("%s\n",strtok(param2,"/"));
   if(strlen(tok1)==param2Length){//there is no extra port specified
-    //printf("no port\n");
     temp = strtok(tok1,"/");
     ipaddr = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(ipaddr,temp);
-    //printf("ipaddr: %s\n",ipaddr);
 
     temp = strtok(NULL,"/");
     path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(path,temp);
-    //printf("path: %s\n\n",path);
 
     port = NULL;
   }
   else{
-    //printf("is extra port\n\n");
     ipaddr = tok1;
 
     ipaddr = (char*)malloc((strlen(tok1)+1)*(sizeof(char)));
     strcpy(ipaddr,tok1);
-    //printf("ipaddr: %s\n",ipaddr);
 
     temp = strtok(NULL,"/");
     port = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(port,temp);
-    //printf("port: %s\n",port);
 
     temp = strtok(NULL,"/");
     path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(path,temp);
-    //printf("path: %s\n\n",path);
   }
 
   //char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
-  //char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgHead =
+  //"HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+
   char *msgGet = malloc(1000*sizeof(char));
   strcpy(msgGet,"GET /");
   strcat(msgGet,path);
@@ -167,12 +159,13 @@ int main(int argc, char const *argv[]) {
     fprintf(stdout, "%s", reply);
   }
 
-  //printf("%s\n",reply);
-  //fprintf(outfile, "%s", reply);
-  //printf("done\n");
+  //finish up and close everything
   if (isH!=1) {
     fclose(outfile);
   }
+  
+  shutdown(sockfd,2);
+  close(sockfd);
 
   free(msgHead);
   free(msgGet);

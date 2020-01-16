@@ -40,40 +40,46 @@ int main(int argc, char const *argv[]) {
   char param2[param2Length];
   strcpy(param2,argv[2]);
 
-  /*
-  char *param2parts[3];
-  int i =0;
-  char *p = strtok(param2,":");
-  while(p!=NULL){
-    param2parts[i++]=p;
-    p = strtok(NULL,":");
-  }
-  for (i = 0; i < 3; ++i)
-        printf("%s\n", param2parts[i]);
-        */
-
-
 
   printf("splitting param2\n");
   char *tok1 = strtok(param2,":");
-  char *ipaddr,*path,*port;
+  char *ipaddr;
+  char *path;
+  char *port;
+  char *temp;
+
   printf("token1: %s\n",tok1 );
   //printf("%s\n",strtok(param2,"/"));
   if(strlen(tok1)==param2Length){//there is no extra port specified
     printf("no port\n");
-    ipaddr = strtok(tok1,"/");
+    temp = strtok(tok1,"/");
+    ipaddr = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
+    strcpy(ipaddr,temp);
     printf("ipaddr: %s\n",ipaddr);
-    path = strtok(NULL,"/");
+
+    temp = strtok(NULL,"/");
+    path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
+    strcpy(path,temp);
     printf("path: %s\n\n",path);
+
     port = NULL;
   }
   else{
     printf("is extra port\n\n");
     ipaddr = tok1;
+
+    ipaddr = (char*)malloc((strlen(tok1)+1)*(sizeof(char)));
+    strcpy(ipaddr,tok1);
     printf("ipaddr: %s\n",ipaddr);
-    port = strtok(NULL,"/");
+
+    temp = strtok(NULL,"/");
+    port = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
+    strcpy(port,temp);
     printf("port: %s\n",port);
-    path = strtok(NULL,"/");
+
+    temp = strtok(NULL,"/");
+    path = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
+    strcpy(path,temp);
     printf("path: %s\n\n",path);
   }
   printf("param2Length: %i\n",strlen(param2));
@@ -82,7 +88,7 @@ int main(int argc, char const *argv[]) {
   //printf("stuff: %s\n%s\n%s\n", ipaddr,path,port);
 
   //int tempLength = 4+strlen(path);
-  //char temp[tempLength];
+  //char temp[100];
   //strcat(temp,"/");
   //strcat(temp,path);
   //printf("new path: %s\n",temp);
@@ -93,9 +99,23 @@ int main(int argc, char const *argv[]) {
 
   //outgoing messages
   //currently example, change to parameter for final
-  char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
-  //char *msgGet = "GET "+temp+" HTTP/1.1\r\nHost: "+param1+"\r\n\r\n";
-  char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  char *msgGet = malloc(1000*sizeof(char));
+  strcpy(msgGet,"GET /");
+  strcat(msgGet,path);
+  strcat(msgGet," HTTP/1.1\r\nHost: ");
+  strcat(msgGet,param1);
+  strcat(msgGet,"\r\n\r\n");
+
+  char *msgHead = malloc(1000*sizeof(char));
+  strcpy(msgHead,"HEAD /");
+  strcat(msgHead,path);
+  strcat(msgHead," HTTP/1.1\r\nHost: ");
+  strcat(msgHead,param1);
+  strcat(msgHead,"\r\n\r\n");
+
+
 
   /*
   if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)

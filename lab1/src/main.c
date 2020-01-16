@@ -7,6 +7,13 @@
 #include <string.h>
 #include <arpa/inet.h>
 
+//Nikita Usenko
+//nusenko 1569296
+//CSE156
+//1/16/2020
+//Lab1
+//main.c
+
 int main(int argc, char const *argv[]) {
   //check command line options
   if(argc<3){

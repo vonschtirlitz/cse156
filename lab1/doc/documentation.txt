@@ -1,0 +1,63 @@
+//Nikita Usenko
+//nusenko 1569296
+//CSE156
+//1/16/2020
+//Lab1
+//documentation.txt
+
+Welcome to PA1, by Nikita Usenko! This is a simple HTTP GET/HEAD client that
+takes a hostname and URL (possibly with specified port), and returns the HTTP
+request that the server sends back. The basic bare minimum usage is as follows:
+
+./pa1 (hostname) (URL) <-h (optional)>
+
+The program will return the HTTP GET response into the file "output.dat".
+The hostname is the hostname of the server, such as "example.com".
+The URL includes the IP address, optionally a specified port (if none provided,
+the default used will be 80, HTTP port).
+The -h flag is used to signify the HTTP HEAD request rather than GET. When this
+is used, the program will output the HEAD response to stdout rather than
+"output.dat".
+
+The makefile has a few options as well.
+
+"make" or "make pa1" will build pa1.
+The option "cleanpa1" will remove pa1 and output.dat
+The options "testPa1(G/H)<P>" run some basic tests on the program with options
+on GET/HEAD and optional ports. This is mostly used for for my automated CI
+pipeline tests, and probably not going to be used by you.
+
+Some internal design notes about how the program operates.
+1. The program first checks the arguments passed to it, and copies them down. It
+also checks for the optional "-h" flag at the end and marks an int if it is
+provided.
+2. The program then splits the provided argument strings into tokens for future
+use. This includes the host, ipaddress, port (if present), and file path. It
+saves them to memory for future operations.
+3. The program then builds the needed message to send to the server. It actually
+builds two messages, one for the GET and one for the HEAD. This is possibly a
+drawback to the program as it never uses both at once. It is a bit wasteful but
+it works so unless the url or hostname are insanely long, it shouldn't cause any
+issue.
+4. The socket is then created, information for ipaddress and port passed, and
+the socket connected.
+5. The program then selects which message to send (GET or HEAD), and sends it.
+6. The program then selects output depending on the "-h" flag (file or stdout),
+and reads into a buffer and then writes to the output. This allows for virtually
+unlimited size of the reply.
+7. The program then closes the socket, file (if needed), and frees memory.
+
+Thats about it.
+
+I noticed a few discrepancies when operating on different platforms. I ran my
+program on Mac OSX (Darwin 18.7) (my personal machine), Ubuntu Xenial (16.04)
+(travis-ci build), and CentOS 7.7.1908 (which is the campus timeshare). I had
+some issues with handling null characters in buffers, and each system handled
+the error differently. While I did my best to patch out any issues and make
+performance identical, I am sure that there are potentially some other glitches
+that can result with more edge cases. This is simply the nature of running code
+across many different machines. Going forward, I am considering modifying my
+build matrix for travis-ci to test on CentOS to mirror what the submission will
+be tested on. Ideally I would love to have it evaluated on a container which
+would have identical configurations as my build and test environment, but that
+seems unlikely in the near future.

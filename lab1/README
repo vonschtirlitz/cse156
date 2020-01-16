@@ -1,0 +1,17 @@
+//Nikita Usenko
+//nusenko 1569296
+//CSE156
+//1/16/2020
+//Lab1
+//README
+
+lab1/
+  bin/
+    pa1 -compiled program of PA1
+  doc/
+    documentation.txt -description of program operation and functions
+  etc/
+  src/
+    main.c -main program
+  makefile -makefile to build/run/test program
+  README -this readme

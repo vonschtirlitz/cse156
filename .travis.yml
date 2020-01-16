@@ -4,4 +4,4 @@ jobs:
     #- stage: make/test basic stuff
     #  script: make travishello && make testtravis
     - stage: make/test pa1 stuff
-      script: make pa1 && make testpa1
+      script: make pa1 && make testpa1G && make testpa1GP

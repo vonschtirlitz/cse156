@@ -31,7 +31,7 @@ int main(int argc, char const *argv[]) {
   param2Length = strlen(argv[2]);
   if(argc>3){
     if(strcmp(argv[3],"-h")==0){
-      int isH = 1;
+      isH = 1;
       printf("has -h\n");
     }
   }
@@ -134,40 +134,21 @@ int main(int argc, char const *argv[]) {
     return -1;
   }
 
-  /*
-  //get server host info
-  printf("getting host\n");
-  server = gethostbyname("www.example.com");
-  //server = gethostbyname(argv[1]);
-
-  if(server==NULL){
-    fprintf(stderr, "host not found\n");
-    return -1;
-  }
-  */
-
-
-  printf("copying host info\n");
-  //memset(&serv_addr,0,sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   if(port==NULL){
-
     serv_addr.sin_port = htons(80); //port for HTTP if none specified
   }
   else{
-    //printf("port: %s\n", port);
-
-    serv_addr.sin_port = htons(atoi(port));
+    serv_addr.sin_port = htons(atoi(port)); //use provided port
   }
   printf("ipaddr: %s\n",ipaddr);
-  //serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
-  serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
+  serv_addr.sin_addr.s_addr = inet_addr(ipaddr);
+  //debug manual ip
+  //serv_addr.sin_addr.s_addr = inet_addr("93.184.216.34");
 
-  //memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
-
-  printf("hostinfocopied\n");
 
   //connect socket
+  /*
   printf("\nconnecting socket\n");
   printf("IP: %s\n", ipaddr);
   if(port!=NULL){
@@ -176,27 +157,43 @@ int main(int argc, char const *argv[]) {
   else{
     printf("port (none given): 80\n");
   }
-  //printf("%i\n",serv_addr.sin_addr.s_addr);
+  */
+
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     fprintf(stderr, "sockfd connection failed\n");
     return -1;
   }
 
   //send message
-  printf("message: %s\n", msgGet);
+
   int msgstatus;
   printf("sending message\n");
-  msgstatus = write(sockfd,msgGet,strlen(msgGet));
+  char *toSend = malloc(strlen(msgHead)*sizeof(char));
+
+  if(isH==1){
+    strcpy(toSend,msgHead);
+  }
+  else{
+    strcpy(toSend,msgGet);
+  }
+  printf("message: %s\n", toSend);
+
+  msgstatus = write(sockfd,toSend,strlen(msgGet));
   if (msgstatus<0) {
     fprintf(stderr, "message failed to send\n");
   }
   printf("receiving reply\n");
+  msgstatus = write(sockfd,toSend,strlen(msgGet));
+
+  //i send it again because theres some issues with head with only one send
+  //¯\_(ツ)_/¯
+  //it just works
   char reply[4096];
   msgstatus = read(sockfd,reply,4095);
   if (msgstatus<0) {
     fprintf(stderr, "failed to receive reply\n");
   }
-  //printf("%s\n",reply );
+  printf("%s\n",reply );
   printf("done\n");
 
   return 0;

@@ -173,6 +173,5 @@ int main(int argc, char const *argv[]) {
   free(port);
   free(ipaddr);
 
-
   return 0;
 }

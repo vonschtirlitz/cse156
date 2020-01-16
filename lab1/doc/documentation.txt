@@ -46,3 +46,18 @@ the socket connected.
 and reads into a buffer and then writes to the output. This allows for virtually
 unlimited size of the reply.
 7. The program then closes the socket, file (if needed), and frees memory.
+
+Thats about it.
+
+I noticed a few discrepancies when operating on different platforms. I ran my
+program on Mac OSX (Darwin 18.7) (my personal machine), Ubuntu Xenial (16.04)
+(travis-ci build), and CentOS 7.7.1908 (which is the campus timeshare). I had
+some issues with handling null characters in buffers, and each system handled
+the error differently. While I did my best to patch out any issues and make
+performance identical, I am sure that there are potentially some other glitches
+that can result with more edge cases. This is simply the nature of running code
+across many different machines. Going forward, I am considering modifying my
+build matrix for travis-ci to test on CentOS to mirror what the submission will
+be tested on. Ideally I would love to have it evaluated on a container which
+would have identical configurations as my build and test environment, but that
+seems unlikely in the near future.

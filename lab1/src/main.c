@@ -71,7 +71,7 @@ int main(int argc, char const *argv[]) {
     ipaddr = (char*)malloc((strlen(tok1)+1)*(sizeof(char)));
     strcpy(ipaddr,tok1);
     printf("ipaddr: %s\n",ipaddr);
-    
+
     temp = strtok(NULL,"/");
     port = (char*)malloc((strlen(temp)+1)*(sizeof(char)));
     strcpy(port,temp);
@@ -99,16 +99,23 @@ int main(int argc, char const *argv[]) {
 
   //outgoing messages
   //currently example, change to parameter for final
-  char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
-  //char *msgGet = "GET /";
-  //printf("msgget: %s\n",msgGet );
-  //char *temp = strdup(path);
-  //strcat(msgGet,temp);
-  //printf("msgget: %s\n",msgGet );
-  //strcat(msgGet," HTTP/1.1\r\nHost: ");
-  //strcat(msgGet,param1);
-  //strcat(msgGet,"\r\n\r\n");
-  char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgGet = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  //char *msgHead = "HEAD /index.html HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+  char *msgGet = malloc(1000*sizeof(char));
+  strcpy(msgGet,"GET /");
+  strcat(msgGet,path);
+  strcat(msgGet," HTTP/1.1\r\nHost: ");
+  strcat(msgGet,param1);
+  strcat(msgGet,"\r\n\r\n");
+
+  char *msgHead = malloc(1000*sizeof(char));
+  strcpy(msgHead,"HEAD /");
+  strcat(msgHead,path);
+  strcat(msgHead," HTTP/1.1\r\nHost: ");
+  strcat(msgHead,param1);
+  strcat(msgHead,"\r\n\r\n");
+
+
 
   /*
   if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)

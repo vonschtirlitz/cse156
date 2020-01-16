@@ -24,6 +24,7 @@ int main(int argc, char const *argv[]) {
   struct hostent *server;
   int sockfd;
   int desPort;
+  FILE * outfile;
 
   printf("%s\n",argv[1]);
   param1Length = strlen(argv[1]);
@@ -178,23 +179,22 @@ int main(int argc, char const *argv[]) {
   }
   printf("message: %s\n", toSend);
 
-  msgstatus = write(sockfd,toSend,strlen(msgGet));
+  msgstatus = write(sockfd,toSend,strlen(toSend));
   if (msgstatus<0) {
     fprintf(stderr, "message failed to send\n");
   }
   printf("receiving reply\n");
-  msgstatus = write(sockfd,toSend,strlen(msgGet));
-
-  //i send it again because theres some issues with head with only one send
-  //¯\_(ツ)_/¯
-  //it just works
-  char reply[4096];
-  msgstatus = read(sockfd,reply,4095);
+  
+  char reply[20000];
+  outfile = fopen("output.dat","w");
+  msgstatus = read(sockfd,reply,20000);
   if (msgstatus<0) {
     fprintf(stderr, "failed to receive reply\n");
   }
-  printf("%s\n",reply );
+  printf("%s\n",reply);
+  fprintf(outfile, "%s", reply);
   printf("done\n");
+  fclose(outfile);
 
   return 0;
 }

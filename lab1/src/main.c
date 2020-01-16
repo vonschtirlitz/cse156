@@ -149,8 +149,8 @@ int main(int argc, char const *argv[]) {
 
   if(isH!=1){//read stream to buffer and copy to outfile
     int readcount = read(sockfd,reply,128);
+    outfile = fopen("output.dat","w");
     while(readcount==128){
-      outfile = fopen("output.dat","w");
       fprintf(outfile, "%s", reply);
       bzero(reply,128);
       readcount = read(sockfd,reply,128);
